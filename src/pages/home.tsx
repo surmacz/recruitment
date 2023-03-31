@@ -1,46 +1,11 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
-
-export interface User {
-  id: number
-  name: string
-  username: string
-  email: string
-  city: string
-}
-
-export const users: Array<User> = [
-  {id: 1, name: 'Jon Snow', username: 'Wolf', email: 'jon@snow.com', city: 'Winterfell'},
-  {id: 2, name: 'Darth Vader', username: 'Vader', email: 'darth@vader.com', city: 'Death Star'},
-  {id: 3, name: 'Frodo Baggins', username: 'Frodo', email: 'frodo@baggins.com', city: 'Shire'},
-  {id: 4, name: 'Indiana Jones', username: 'Indy', email: 'indiana@jones.com', city: 'Venice'},
-  {id: 5, name: 'Luke Skywalker', username: 'Luke', email: 'luke@skywalker.com', city: 'Tatooine'},
-]
-
-const PrimaryButton = styled.button`
-  background: blue;
-  border-radius: 5px;
-  border: 2px solid blue;
-  color: white;
-  padding: 0.25em 1em;
-`
-
-const WarningButton = styled.button`
-  background: orange;
-  border-radius: 5px;
-  border: 2px solid orange;
-  color: white;
-  padding: 0.25em 1em;
-`
-
-const DangerButton = styled.button`
-  background: red;
-  border-radius: 5px;
-  border: 2px solid red;
-  color: white;
-  padding: 0.25em 1em;
-`
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { useEffect } from 'react'
+import { setIsLoading, setUsers } from '@/redux/root-reducer'
+import { DangerButton, Loading, PrimaryButton, WarningButton } from '@/components/styled-components'
+import { usersData } from '@/model'
 
 const Main = styled.main`
   margin: 1rem 1rem;
@@ -52,7 +17,6 @@ const Main = styled.main`
     margin: 1rem 3rem;
   }
 `
-
 const MainHeader = styled.div`
   display: flex;
   flex-direction: row;
@@ -65,7 +29,6 @@ const TableContainer = styled.div`
   margin: 1rem 1rem 0 1rem;
   overflow-x: auto;
 `
-
 const Table = styled.table`
   width: 100%;
   border: 1px solid gray;
@@ -74,9 +37,7 @@ const Table = styled.table`
 const Thead = styled.thead`
   background-color: lightgrey;
 `
-
 const Tr = styled.tr``
-
 const Tbody = styled.tbody`
   > tr:not(:last-child) td {
     border-bottom: 1px solid lightgray;
@@ -86,23 +47,29 @@ const Tbody = styled.tbody`
     padding-right: .6rem;
   }
 `
-
-interface ThProps {
-  readonly align?: string;
-}
-
-const Th = styled.th<ThProps>`
+const Th = styled.th<{readonly align?: string}>`
   padding: 1rem 0 1rem .6rem;
   text-align: ${props => props.align || 'left'};
 `
-
 const Td = styled.td`
   padding: 1rem 0 1rem .6rem;
   text-align: ${props => props.align || 'left'};
 `
 
 export default function Home() {
-  const router = useRouter();
+  const router = useRouter()
+  const users = useAppSelector(state => state.users)
+  const isLoading = useAppSelector(state => state.isLoading)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(setIsLoading(true))
+    setTimeout(() => {
+      dispatch(setUsers(usersData))
+      dispatch(setIsLoading(false))
+    }, 3000);
+  }, []);
+
   return (
     <>
       <Head>
@@ -111,36 +78,39 @@ export default function Home() {
       </Head>
       <header>Home</header>
       <Main>
-        <MainHeader>
-          <h2>User List</h2>
-          <PrimaryButton>Add new</PrimaryButton>
-        </MainHeader>
-        <TableContainer>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th align="center">Id</Th>
-                <Th>Name</Th>
-                <Th>Username</Th>
-                <Th>Email</Th>
-                <Th>City</Th>
-                <Th>Edit</Th>
-                <Th>Delete</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {users.map(user => <Tr key={user.id}>
-                <Td align="center" key='1'>{user.id}</Td>
-                <Td key='2'>{user.name}</Td>
-                <Td key='3'>{user.username}</Td>
-                <Td key='4'>{user.email}</Td>
-                <Td key='5'>{user.city}</Td>
-                <Td key='6'><WarningButton onClick={() => router.push('/edit/'+user.id)}>edit</WarningButton></Td>
-                <Td key='7'><DangerButton>delete</DangerButton></Td>
-              </Tr>)}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        {isLoading ? <Loading /> :
+        <>
+          <MainHeader>
+            <h2>User List</h2>
+            <PrimaryButton onClick={() => router.push('/add')}>Add new</PrimaryButton>
+          </MainHeader>
+          <TableContainer>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th align="center">Id</Th>
+                  <Th>Name</Th>
+                  <Th>Username</Th>
+                  <Th>Email</Th>
+                  <Th>City</Th>
+                  <Th>Edit</Th>
+                  <Th>Delete</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {users.map(user => <Tr key={user.id}>
+                  <Td align="center" key='1'>{user.id}</Td>
+                  <Td key='2'>{user.name}</Td>
+                  <Td key='3'>{user.username}</Td>
+                  <Td key='4'>{user.email}</Td>
+                  <Td key='5'>{user.city}</Td>
+                  <Td key='6'><WarningButton onClick={() => router.push('/edit/' + user.id)}>edit</WarningButton></Td>
+                  <Td key='7'><DangerButton>delete</DangerButton></Td>
+                </Tr>)}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </>}
       </Main>
     </>
   )
