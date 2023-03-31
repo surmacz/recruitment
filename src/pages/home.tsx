@@ -1,7 +1,8 @@
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 
-interface User {
+export interface User {
   id: number
   name: string
   username: string
@@ -9,7 +10,7 @@ interface User {
   city: string
 }
 
-const users: Array<User> = [
+export const users: Array<User> = [
   {id: 1, name: 'Jon Snow', username: 'Wolf', email: 'jon@snow.com', city: 'Winterfell'},
   {id: 2, name: 'Darth Vader', username: 'Vader', email: 'darth@vader.com', city: 'Death Star'},
   {id: 3, name: 'Frodo Baggins', username: 'Frodo', email: 'frodo@baggins.com', city: 'Shire'},
@@ -82,7 +83,7 @@ const Tbody = styled.tbody`
   }
 
   > tr td:last-child {
-    padding-right: .6em;
+    padding-right: .6rem;
   }
 `
 
@@ -101,6 +102,7 @@ const Td = styled.td`
 `
 
 export default function Home() {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -133,7 +135,7 @@ export default function Home() {
                 <Td key='3'>{user.username}</Td>
                 <Td key='4'>{user.email}</Td>
                 <Td key='5'>{user.city}</Td>
-                <Td key='6'><WarningButton>edit</WarningButton></Td>
+                <Td key='6'><WarningButton onClick={() => router.push('/edit/'+user.id)}>edit</WarningButton></Td>
                 <Td key='7'><DangerButton>delete</DangerButton></Td>
               </Tr>)}
             </Tbody>
