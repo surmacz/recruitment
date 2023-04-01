@@ -1,10 +1,11 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
+import { User } from '@/model'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import { useEffect } from 'react'
-import { setIsLoading, setUsers } from '@/redux/root-reducer'
-import { DangerButton, Loading, PrimaryButton, WarningButton } from '@/components/styled-components'
+import { useEffect, useRef, forwardRef } from 'react'
+import { setIsLoading, setUserPendingDelete, setUsers } from '@/redux/root-reducer'
+import { ActionsContainer, DangerButton, LightButton, Loading, PrimaryButton, SubmitButton, WarningButton } from '@/components/styled-components'
 
 const Main = styled.main`
   margin: 1rem 1rem;
@@ -61,6 +62,8 @@ export default function Home() {
   const isLoading = useAppSelector(state => state.isLoading)
   const dispatch = useAppDispatch()
 
+  const deleteDialogRef = useRef<HTMLDialogElement>(null)
+
   useEffect(() => {
     (async () => {
       dispatch(setIsLoading(true))
@@ -68,13 +71,17 @@ export default function Home() {
       const { installMocks } = await import('@/mocks/browser')
       installMocks()
 
-      const usersResponse = await fetch('/users')
-      const usersData = await usersResponse.json()
-
-      dispatch(setUsers(usersData))
-      dispatch(setIsLoading(false))
+      await loadUsers();
     })()
   }, []);
+
+  async function loadUsers() {
+    const usersResponse = await fetch('/users')
+    const usersData = await usersResponse.json()
+
+    dispatch(setUsers(usersData))
+    dispatch(setIsLoading(false))
+  }
 
   return (
     <>
@@ -110,12 +117,83 @@ export default function Home() {
                   <Td key='4'>{user.email}</Td>
                   <Td key='5'>{user.city}</Td>
                   <Td key='6'><WarningButton onClick={() => router.push('/edit/' + user.id)}>edit</WarningButton></Td>
-                  <Td key='7'><DangerButton>delete</DangerButton></Td>
+                  <Td key='7'>
+                    <DangerButton onClick={() => {dispatch(setUserPendingDelete(user)); deleteDialogRef.current?.showModal()}}>
+                      delete
+                    </DangerButton>
+                  </Td>
                 </Tr>)}
               </Tbody>
             </Table>
           </TableContainer>}
       </Main>
+      <DeleteDialog ref={deleteDialogRef} onSuccess={loadUsers} />
     </>
   )
 }
+
+const Dialog = styled.dialog`
+  width: 30vw;
+  border-radius: 5px;
+  border: 0;
+  padding: 0;
+  ::backdrop {
+    background-color: rgba(0, 0, 0, .6)
+  }
+  > h2 {
+    margin: 0;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid lightgray;
+  }
+  > .caption {
+    height: 4rem;
+    padding: 0 1rem;
+    border-bottom: 1px solid lightgray;
+    display: flex;
+    align-items: center;
+  }
+  > .actions {
+    padding: 0 1rem 1rem 0;
+  }
+`
+
+type DeleteDialogProps = {
+  onSuccess: () => void
+}
+
+const DeleteDialog = forwardRef<HTMLDialogElement, DeleteDialogProps>((props, ref) => {
+  const userPendingDelete = useAppSelector(state => state.userPendingDelete)
+  const isLoading = useAppSelector(state => state.isLoading)
+  const dispatch = useAppDispatch()
+
+  const deleteUser = async() => {
+    dispatch(setIsLoading(true))
+    await fetch('/users/' + userPendingDelete.id, {method: 'DELETE'})
+    closeSelf()
+    dispatch(setUserPendingDelete({} as User))
+    props.onSuccess()
+  }
+
+  const closeSelf = () => {
+    (ref as any).current.close();
+  }
+
+  const cancel = () => {
+    closeSelf()
+    dispatch(setUserPendingDelete({} as User))
+  }
+
+  return <Dialog ref={ref}>
+    {isLoading ? <Loading />
+    : <>
+      <h2>Delete</h2>
+      <div className='caption'>Do you want to delete user: {userPendingDelete.name}?</div>
+      <div className='actions'>
+        <ActionsContainer>
+          <LightButton onClick={cancel}>Cancel</LightButton>
+          <SubmitButton onClick={deleteUser} type="submit" value="Delete" />
+        </ActionsContainer>
+      </div>
+    </>}
+  </Dialog>
+})

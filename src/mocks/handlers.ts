@@ -18,7 +18,7 @@ export const handlers = [
   }),
   rest.post('/users', async(req, res, ctx) => {
     const newUser = await req.json()
-    const newId = Math.max(...users.map(user => user.id)) + 1
+    const newId = users.length ? Math.max(...users.map(user => user.id)) + 1 : 1
     users.push({...newUser, id: newId})
 
     return res(
@@ -58,5 +58,21 @@ export const handlers = [
       ctx.delay(500), //to simulate latency
       ctx.json<string>('Done')
     )
-  })
+  }),
+  rest.delete('/users/:userId', async (req, res, ctx) => {
+    const {userId} = req.params
+    if (typeof userId !== 'string' || isNaN(userId as unknown as number)) {
+      return res(ctx.status(400))
+    }
+    const userIndex = users.findIndex(user => user.id === +userId);
+    if (userIndex === -1) {
+      return res(ctx.status(400))
+    }
+    users.splice(userIndex, 1);
+
+    return res(
+      ctx.delay(1000), //to simulate latency
+      ctx.json<string>('Done')
+    )
+  }),
 ]

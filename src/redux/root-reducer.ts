@@ -5,7 +5,9 @@ export const setUsers = createAction<Array<User>>('users/set')
 
 export const setIsLoading = createAction<boolean>('isLoading/set')
 
-const initialState = {users: [] as Array<User>, isLoading: false}
+export const setUserPendingDelete = createAction<User>('userPendingDelete/set')
+
+const initialState = {users: [] as Array<User>, isLoading: false, userPendingDelete: {} as User}
 
 export default createReducer(initialState, (builder) => {
   builder
@@ -14,5 +16,8 @@ export default createReducer(initialState, (builder) => {
     })
     .addCase(setIsLoading, (state, action) => {
       state.isLoading = action.payload
+    })
+    .addCase(setUserPendingDelete, (state, action) => {
+      state.userPendingDelete = action.payload
     })
 })

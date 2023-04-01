@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { SubmitHandler, UseFormReturn, useForm } from "react-hook-form";
 import styled from "styled-components";
-import { LightButton, SubmitButton } from "./styled-components";
+import { ActionsContainer, LightButton, SubmitButton } from "./styled-components";
 import { FC } from "react";
 import { User } from "@/model";
 
@@ -42,15 +42,6 @@ const FormRow = styled.div<{labelWidth: number}>`
     }
   }
 `
-const ActionsContainer = styled.div`
-  display: flex;
-  gap: .5rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-  > input, button {
-    font-size: .8rem;
-  }
-`
 
 type FormProps = {
   form: UseFormReturn<User, any>
@@ -79,7 +70,7 @@ export const Form: FC<FormProps> = ({form, onSubmit}) => {
     </FormRow>
     <ActionsContainer>
       <LightButton onClick={() => router.push('/home')}>Cancel</LightButton>
-      <SubmitButton type="submit" />
+      <SubmitButton type="submit" value="Submit" />
     </ActionsContainer>
   </form>
 }

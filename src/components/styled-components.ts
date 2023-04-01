@@ -73,3 +73,12 @@ export const SubmitButton = styled.input`
     background-color: #146c43
   }
 `
+export const ActionsContainer = styled.div`
+  display: flex;
+  gap: .5rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  > input, button {
+    font-size: .8rem;
+  }
+`
