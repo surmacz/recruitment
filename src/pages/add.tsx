@@ -26,14 +26,17 @@ export default function AddUserForm() {
   const router = useRouter();
 
   const form = useForm<User>();
-  const onSubmit: SubmitHandler<User> = data => {
+  const onSubmit: SubmitHandler<User> = async(data) => {
     dispatch(setIsLoading(true))
-    setTimeout(() => {
-      //todo: add user
-      console.log('<<', data);
 
-      router.push('/home')
-    }, 3000);
+    const { installMocks } = await import('@/mocks/browser')
+    installMocks()
+
+    await fetch(
+      '/users',
+      {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}},
+    )
+    router.push('/home')
   };
 
   const isLoading = useAppSelector(state => state.isLoading)

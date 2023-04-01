@@ -5,7 +5,6 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useEffect } from 'react'
 import { setIsLoading, setUsers } from '@/redux/root-reducer'
 import { DangerButton, Loading, PrimaryButton, WarningButton } from '@/components/styled-components'
-import { usersData } from '@/model'
 
 const Main = styled.main`
   margin: 1rem 1rem;
@@ -63,11 +62,18 @@ export default function Home() {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(setIsLoading(true))
-    setTimeout(() => {
+    (async () => {
+      dispatch(setIsLoading(true))
+
+      const { installMocks } = await import('@/mocks/browser')
+      installMocks()
+
+      const usersResponse = await fetch('/users')
+      const usersData = await usersResponse.json()
+
       dispatch(setUsers(usersData))
       dispatch(setIsLoading(false))
-    }, 3000);
+    })()
   }, []);
 
   return (
@@ -78,23 +84,22 @@ export default function Home() {
       </Head>
       <header>Home</header>
       <Main>
+        <MainHeader>
+          <h2>User List</h2>
+          <PrimaryButton onClick={() => router.push('/add')}>Add new</PrimaryButton>
+        </MainHeader>
         {isLoading ? <Loading /> :
-        <>
-          <MainHeader>
-            <h2>User List</h2>
-            <PrimaryButton onClick={() => router.push('/add')}>Add new</PrimaryButton>
-          </MainHeader>
           <TableContainer>
             <Table>
               <Thead>
                 <Tr>
-                  <Th align="center">Id</Th>
-                  <Th>Name</Th>
-                  <Th>Username</Th>
-                  <Th>Email</Th>
-                  <Th>City</Th>
-                  <Th>Edit</Th>
-                  <Th>Delete</Th>
+                  <Th align="center" key='1'>Id</Th>
+                  <Th key='2'>Name</Th>
+                  <Th key='3'>Username</Th>
+                  <Th key='4'>Email</Th>
+                  <Th key='5'>City</Th>
+                  <Th key='6'>Edit</Th>
+                  <Th key='7'>Delete</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -109,8 +114,7 @@ export default function Home() {
                 </Tr>)}
               </Tbody>
             </Table>
-          </TableContainer>
-        </>}
+          </TableContainer>}
       </Main>
     </>
   )

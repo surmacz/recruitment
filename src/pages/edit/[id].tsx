@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setIsLoading } from '@/redux/root-reducer'
 import { Loading } from '@/components/styled-components'
 import { Form } from '@/components/form'
-import { User, usersData } from '@/model'
+import { User } from '@/model'
 
 const Main = styled.main`
   width: 40vh;
@@ -27,31 +27,34 @@ export default function EditUserForm() {
   const router = useRouter();
 
   const form = useForm<User>();
-  const onSubmit: SubmitHandler<User> = data => {
+  const onSubmit: SubmitHandler<User> = async(data) => {
     dispatch(setIsLoading(true))
-    setTimeout(() => {
-      //todo: replace user
-      router.push('/home')
-    }, 3000);
+    await fetch(
+      '/users/' + router.query.id,
+      {method: 'PUT', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}},
+    )
+    router.push('/home')
   };
 
   const isLoading = useAppSelector(state => state.isLoading)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(setIsLoading(true))
+    (async () => {
+      dispatch(setIsLoading(true))
 
-    const idInt = +(router.query.id as string);
-    if (!idInt) {
-      return;
-    }
+      if (!router.query.id) {
+        return;
+      }
+      const { installMocks } = await import('@/mocks/browser')
+      installMocks()
 
-    setTimeout(() => {
-      const user = usersData.find(user => user.id === idInt) as User
+      const response = await fetch('/users/' + router.query.id)
+      const user = await response.json()
+
       form.reset(user)
-
       dispatch(setIsLoading(false))
-    }, 3000);
+      })()
   }, [router.query.id]);
 
   return (

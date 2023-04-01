@@ -2,11 +2,11 @@ export default function Home() {
   return null
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   return {
     redirect: {
       destination: '/home',
-      permanent: true,
+      permanent: false,
     },
   }
 }
