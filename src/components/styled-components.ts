@@ -29,48 +29,87 @@ export const Loading = styled.div`
 `
 
 export const PrimaryButton = styled.button`
-  background: blue;
+  background-color: #1a73e8;
   border-radius: 5px;
-  border: 2px solid blue;
+  border: 2px solid #1a73e8;
   color: white;
-  padding: 0.25em 1em;
+  padding: 0.2rem 1.2rem;
+  font-size: .8rem;
+  :hover {
+    background-color: #005DB3;
+    border-color: #005DB3;
+  }
+  :active {
+    background-color: #5195CE;
+    border-color: #5195CE;
+  }
 `
 
 export const WarningButton = styled.button`
-  background: orange;
+  background-color: #e88e1a;
   border-radius: 5px;
-  border: 2px solid orange;
+  border: 2px solid #e88e1a;
   color: white;
-  padding: 0.25em 1em;
+  padding: 0.2rem 1.2rem;
+  font-size: .8rem;
+  :hover {
+    background-color: #DF8816;
+    border-color: #DF8816;
+  }
+  :active {
+    background-color: #CC7C14;
+    border-color: #CC7C14;
+  }
 `
 
 export const DangerButton = styled.button`
-  background: red;
+  background-color: #e8241a;
   border-radius: 5px;
-  border: 2px solid red;
+  border: 2px solid #e8241a;
   color: white;
-  padding: 0.25em 1em;
+  padding: 0.2rem 1.2rem;
+  font-size: .8rem;
+  :hover {
+    background-color: #DF2016;
+    border-color: #DF2016;
+  }
+  :active {
+    background-color: #CC1D14;
+    border-color: #CC1D14;
+  }
 `
 
 export const LightButton = styled.button`
-  background: transparent;
+  background-color: transparent;
   border-radius: 5px;
-  border: 1px solid red;
-  color: red;
-  padding: 0.4em 1.2em;
-`
-
-export const SubmitButton = styled.input`
-  background: #198754;
-  border-radius: 5px;
-  border: 1px solid #198754;
-  color: white;
-  padding: 0.4em 1.2em;
+  border: 1px solid #f0756e;
+  color: #f0756e;
+  padding: 0.2rem 1.2rem;
+  font-size: .8rem;
   :hover {
-    background-color: #157347
+    background-color: #FDEDED;
+    color: #EF726B;
   }
   :active {
-    background-color: #146c43
+    background-color: #FBDADA;
+    color: #ED615A;
+  }
+`
+
+export const SubmitButton = styled.button`
+  background-color: #11b524;
+  border-radius: 5px;
+  border: 1px solid #11b524;
+  color: white;
+  padding: 0.2rem 1.2rem;
+  font-size: .8rem;
+  :hover {
+    background-color: #10A821;
+    border-color: #10A821;
+  }
+  :active {
+    background-color: #0E951E;
+    border-color: #0E951E;
   }
 `
 export const ActionsContainer = styled.div`

@@ -15,12 +15,12 @@ const FormRow = styled.div<{labelWidth: number}>`
   }
   label {
     padding: .375rem 0;
-    line-height: 1.5;
+    line-height: 1.3;
   }
   input {
     font-family: "Times New Roman", Times, serif;
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.3;
     padding: .375rem .75rem;
     border: 1px solid lightgray;
     border-radius: 0.375rem;
@@ -29,7 +29,7 @@ const FormRow = styled.div<{labelWidth: number}>`
   input:focus {
     border-color: #86b7fe;
     outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+    box-shadow: 0 0 0 0.15rem rgba(13,110,253,.25);
   }
 
   @media (min-width: 610px) {
@@ -70,7 +70,7 @@ export const Form: FC<FormProps> = ({form, onSubmit}) => {
     </FormRow>
     <ActionsContainer>
       <LightButton type="button" onClick={() => router.push('/home')}>Cancel</LightButton>
-      <SubmitButton type="submit" value="Submit" />
+      <SubmitButton type="submit">Submit</SubmitButton>
     </ActionsContainer>
   </form>
 }

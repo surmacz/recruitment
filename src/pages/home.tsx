@@ -208,7 +208,7 @@ const DeleteDialog = forwardRef<HTMLDialogElement, DeleteDialogProps>(function D
       <div className='actions'>
         <ActionsContainer>
           <LightButton onClick={cancel}>Cancel</LightButton>
-          <SubmitButton onClick={deleteUser} type="submit" value="Delete" />
+          <SubmitButton onClick={deleteUser} type="submit">Delete</SubmitButton>
         </ActionsContainer>
       </div>
     </>}
