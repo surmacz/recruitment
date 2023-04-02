@@ -1,57 +1,28 @@
 import { User } from '@/model'
-import { DefaultBodyType, PathParams, RestRequest, rest } from 'msw'
-
-const users = [
-  {
-    id: 1,
-    name: 'Jon Snow',
-    username: 'Wolf',
-    email: 'jon@snow.com',
-    city: 'Winterfell',
-  },
-  {
-    id: 2,
-    name: 'Darth Vader',
-    username: 'Vader',
-    email: 'darth@vader.com',
-    city: 'Death Star',
-  },
-  {
-    id: 3,
-    name: 'Frodo Baggins',
-    username: 'Frodo',
-    email: 'frodo@baggins.com',
-    city: 'Shire',
-  },
-  {
-    id: 4,
-    name: 'Indiana Jones',
-    username: 'Indy',
-    email: 'indiana@jones.com',
-    city: 'Venice',
-  },
-  {
-    id: 5,
-    name: 'Luke Skywalker',
-    username: 'Luke',
-    email: 'luke@skywalker.com',
-    city: 'Tatooine',
-  },
-]
+import { rest } from 'msw'
+import { db } from './db'
 
 export const handlers = [
   rest.get('/users', (req, res, ctx) => {
     return res(
       ctx.delay(500), //to simulate latency
-      ctx.json<Array<User>>(users)
+      ctx.json<Array<User>>(db.user.getAll())
     )
   }),
   rest.post('/users', async (req, res, ctx) => {
+    let id = 0
+    try {
+      ;({ id } = db.user.findFirst({
+        orderBy: {
+          id: 'desc',
+        },
+        where: {},
+        strict: true,
+      }))
+    } catch (e) {}
+
     const newUser = await req.json()
-    const newId = users.length
-      ? Math.max(...users.map((user) => user.id)) + 1
-      : 1
-    users.push({ ...newUser, id: newId })
+    db.user.create({ ...newUser, id: id + 1 })
 
     return res(
       ctx.delay(500), //to simulate latency
@@ -59,23 +30,44 @@ export const handlers = [
     )
   }),
   rest.get('/users/:userId', (req, res, ctx) => {
-    const userIndex = findUserIndex(req)
-    if (userIndex === -1) {
+    const { userId } = req.params
+
+    let user
+    try {
+      user = db.user.findFirst({
+        where: {
+          id: {
+            equals: +userId,
+          },
+        },
+        strict: true,
+      })
+    } catch (e) {
       return res(ctx.status(400))
     }
 
     return res(
       ctx.delay(500), //to simulate latency
-      ctx.json<User>(users[userIndex])
+      ctx.json<User>(user)
     )
   }),
   rest.put('/users/:userId', async (req, res, ctx) => {
-    const userIndex = findUserIndex(req)
-    if (userIndex === -1) {
+    const { userId } = req.params
+    const newUser = await req.json()
+
+    try {
+      db.user.update({
+        where: {
+          id: {
+            equals: +userId,
+          },
+        },
+        data: newUser,
+        strict: true,
+      })
+    } catch (e) {
       return res(ctx.status(400))
     }
-    const newUser = await req.json()
-    users.splice(userIndex, 1, newUser)
 
     return res(
       ctx.delay(500), //to simulate latency
@@ -83,25 +75,24 @@ export const handlers = [
     )
   }),
   rest.delete('/users/:userId', async (req, res, ctx) => {
-    const userIndex = findUserIndex(req)
-    if (userIndex === -1) {
+    const { userId } = req.params
+
+    try {
+      db.user.delete({
+        where: {
+          id: {
+            equals: +userId,
+          },
+        },
+        strict: true,
+      })
+    } catch (e) {
       return res(ctx.status(400))
     }
-    users.splice(userIndex, 1)
 
     return res(
-      ctx.delay(1000), //to simulate latency
+      ctx.delay(500), //to simulate latency
       ctx.json<string>('Done')
     )
   }),
 ]
-
-function findUserIndex(
-  req: RestRequest<DefaultBodyType, PathParams<string>>
-): number {
-  const { userId } = req.params
-  if (typeof userId !== 'string' || isNaN(userId as unknown as number)) {
-    return -1
-  }
-  return users.findIndex((user) => user.id === +userId)
-}
