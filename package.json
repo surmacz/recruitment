@@ -4,7 +4,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
@@ -23,7 +24,8 @@
     "typescript": "5.0.2"
   },
   "devDependencies": {
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "prettier": "2.8.7"
   },
   "msw": {
     "workerDirectory": "public"

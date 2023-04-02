@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import styled from 'styled-components'
-import {useForm, SubmitHandler} from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -25,15 +25,16 @@ const MainHeader = styled.div`
 `
 
 export default function EditUserForm() {
-  const router = useRouter();
+  const router = useRouter()
 
-  const form = useForm<User>();
-  const onSubmit: SubmitHandler<User> = async(data) => {
+  const form = useForm<User>()
+  const onSubmit: SubmitHandler<User> = async (data) => {
     dispatch(setIsLoading(true))
-    const response = await fetch(
-      '/users/' + router.query.id,
-      {method: 'PUT', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}},
-    )
+    const response = await fetch('/users/' + router.query.id, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    })
 
     if (response.ok) {
       showSuccessMessage('User has been saved')
@@ -42,17 +43,17 @@ export default function EditUserForm() {
       showErrorMessage('Error while saving user. Try again!')
       dispatch(setIsLoading(false))
     }
-  };
+  }
 
-  const isLoading = useAppSelector(state => state.isLoading)
+  const isLoading = useAppSelector((state) => state.isLoading)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       dispatch(setIsLoading(true))
 
       if (!router.query.id) {
-        return;
+        return
       }
       const { installMocks } = await import('@/mocks/browser')
       installMocks()
@@ -64,12 +65,12 @@ export default function EditUserForm() {
 
         form.reset(user)
       } else {
-        showErrorMessage('Error while getting user\'s data. Try again!')
+        showErrorMessage("Error while getting user's data. Try again!")
       }
       dispatch(setIsLoading(false))
-      })()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.id]);
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.id])
 
   return (
     <>
@@ -82,7 +83,11 @@ export default function EditUserForm() {
         <MainHeader>
           <h2>Edit Form</h2>
         </MainHeader>
-        {router.isReady && !isLoading ? <Form form={form} onSubmit={onSubmit} /> : <Loading />}
+        {router.isReady && !isLoading ? (
+          <Form form={form} onSubmit={onSubmit} />
+        ) : (
+          <Loading />
+        )}
       </Main>
     </>
   )

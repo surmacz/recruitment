@@ -1,14 +1,14 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Loading = styled.div`
   display: block;
   width: 60px;
   height: 60px;
   margin: 0 auto;
-  padding-top: .2rem;
+  padding-top: 0.2rem;
 
   :after {
-    content: " ";
+    content: ' ';
     display: block;
     width: 32px;
     height: 32px;
@@ -34,14 +34,14 @@ export const PrimaryButton = styled.button`
   border: 2px solid #1a73e8;
   color: white;
   padding: 0.2rem 1.2rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
   :hover {
-    background-color: #005DB3;
-    border-color: #005DB3;
+    background-color: #005db3;
+    border-color: #005db3;
   }
   :active {
-    background-color: #5195CE;
-    border-color: #5195CE;
+    background-color: #5195ce;
+    border-color: #5195ce;
   }
 `
 
@@ -51,14 +51,14 @@ export const WarningButton = styled.button`
   border: 2px solid #e88e1a;
   color: white;
   padding: 0.2rem 1.2rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
   :hover {
-    background-color: #DF8816;
-    border-color: #DF8816;
+    background-color: #df8816;
+    border-color: #df8816;
   }
   :active {
-    background-color: #CC7C14;
-    border-color: #CC7C14;
+    background-color: #cc7c14;
+    border-color: #cc7c14;
   }
 `
 
@@ -68,14 +68,14 @@ export const DangerButton = styled.button`
   border: 2px solid #e8241a;
   color: white;
   padding: 0.2rem 1.2rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
   :hover {
-    background-color: #DF2016;
-    border-color: #DF2016;
+    background-color: #df2016;
+    border-color: #df2016;
   }
   :active {
-    background-color: #CC1D14;
-    border-color: #CC1D14;
+    background-color: #cc1d14;
+    border-color: #cc1d14;
   }
 `
 
@@ -85,14 +85,14 @@ export const LightButton = styled.button`
   border: 1px solid #f0756e;
   color: #f0756e;
   padding: 0.2rem 1.2rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
   :hover {
-    background-color: #FDEDED;
-    color: #EF726B;
+    background-color: #fdeded;
+    color: #ef726b;
   }
   :active {
-    background-color: #FBDADA;
-    color: #ED615A;
+    background-color: #fbdada;
+    color: #ed615a;
   }
 `
 
@@ -102,22 +102,23 @@ export const SubmitButton = styled.button`
   border: 1px solid #11b524;
   color: white;
   padding: 0.2rem 1.2rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
   :hover {
-    background-color: #10A821;
-    border-color: #10A821;
+    background-color: #10a821;
+    border-color: #10a821;
   }
   :active {
-    background-color: #0E951E;
-    border-color: #0E951E;
+    background-color: #0e951e;
+    border-color: #0e951e;
   }
 `
 export const ActionsContainer = styled.div`
   display: flex;
-  gap: .5rem;
+  gap: 0.5rem;
   justify-content: flex-end;
   margin-top: 1.5rem;
-  > input, button {
-    font-size: .8rem;
+  > input,
+  button {
+    font-size: 0.8rem;
   }
 `

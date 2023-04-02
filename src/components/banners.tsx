@@ -1,5 +1,5 @@
-import { FC } from "react";
-import styled from "styled-components";
+import { FC } from 'react'
+import styled from 'styled-components'
 
 const Banner = styled.div`
   position: fixed;
@@ -17,10 +17,16 @@ type InfoBanerProps = {
   backgroundColor: string
   className: string
 }
-const InfoBanner: FC<InfoBanerProps> = ({backgroundColor, className}) => <Banner className={className} style={{backgroundColor}}></Banner>;
+const InfoBanner: FC<InfoBanerProps> = ({ backgroundColor, className }) => (
+  <Banner className={className} style={{ backgroundColor }}></Banner>
+)
 
-export const SuccessBanner = () => <InfoBanner className='success-banner' backgroundColor='#4CAF50' />
-export const ErrorBanner = () => <InfoBanner className='error-banner' backgroundColor='#F44336' />
+export const SuccessBanner = () => (
+  <InfoBanner className="success-banner" backgroundColor="#4CAF50" />
+)
+export const ErrorBanner = () => (
+  <InfoBanner className="error-banner" backgroundColor="#F44336" />
+)
 
 export function showSuccessMessage(message: string) {
   const element = document.querySelector('.success-banner') as HTMLDivElement
@@ -32,7 +38,7 @@ export function showErrorMessage(message: string) {
   showMessage(element, message)
 }
 
-function showMessage(element: HTMLDivElement,  message: string) {
+function showMessage(element: HTMLDivElement, message: string) {
   element.innerHTML = message
   element.style.top = '0'
   setTimeout(() => {
@@ -42,5 +48,5 @@ function showMessage(element: HTMLDivElement,  message: string) {
     setTimeout(() => {
       element.style.transition = 'none'
     }, 2000)
-  }, 3000);
+  }, 3000)
 }

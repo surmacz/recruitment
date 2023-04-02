@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import styled from 'styled-components'
-import {useForm, SubmitHandler} from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setIsLoading } from '@/redux/root-reducer'
@@ -24,19 +24,20 @@ const MainHeader = styled.div`
 `
 
 export default function AddUserForm() {
-  const router = useRouter();
+  const router = useRouter()
 
-  const form = useForm<User>();
-  const onSubmit: SubmitHandler<User> = async(data) => {
+  const form = useForm<User>()
+  const onSubmit: SubmitHandler<User> = async (data) => {
     dispatch(setIsLoading(true))
 
     const { installMocks } = await import('@/mocks/browser')
     installMocks()
 
-    const response = await fetch(
-      '/users',
-      {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}},
-    )
+    const response = await fetch('/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    })
 
     if (response.ok) {
       showSuccessMessage('User has been added')
@@ -45,9 +46,9 @@ export default function AddUserForm() {
       showErrorMessage('Error while adding user. Try again!')
       dispatch(setIsLoading(false))
     }
-  };
+  }
 
-  const isLoading = useAppSelector(state => state.isLoading)
+  const isLoading = useAppSelector((state) => state.isLoading)
   const dispatch = useAppDispatch()
 
   return (
