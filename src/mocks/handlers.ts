@@ -1,5 +1,5 @@
 import { User } from '@/model'
-import { rest } from 'msw'
+import { DefaultBodyType, PathParams, RestRequest, rest } from 'msw'
 
 const users = [
   {
@@ -59,30 +59,21 @@ export const handlers = [
     )
   }),
   rest.get('/users/:userId', (req, res, ctx) => {
-    const { userId } = req.params
-    if (typeof userId !== 'string' || isNaN(userId as unknown as number)) {
-      return res(ctx.status(400))
-    }
-    const user = users.find((user) => user.id === +userId)
-    if (!user) {
+    const userIndex = findUserIndex(req)
+    if (userIndex === -1) {
       return res(ctx.status(400))
     }
 
     return res(
       ctx.delay(500), //to simulate latency
-      ctx.json<User>(user)
+      ctx.json<User>(users[userIndex])
     )
   }),
   rest.put('/users/:userId', async (req, res, ctx) => {
-    const { userId } = req.params
-    if (typeof userId !== 'string' || isNaN(userId as unknown as number)) {
-      return res(ctx.status(400))
-    }
-    const userIndex = users.findIndex((user) => user.id === +userId)
+    const userIndex = findUserIndex(req)
     if (userIndex === -1) {
       return res(ctx.status(400))
     }
-
     const newUser = await req.json()
     users.splice(userIndex, 1, newUser)
 
@@ -92,11 +83,7 @@ export const handlers = [
     )
   }),
   rest.delete('/users/:userId', async (req, res, ctx) => {
-    const { userId } = req.params
-    if (typeof userId !== 'string' || isNaN(userId as unknown as number)) {
-      return res(ctx.status(400))
-    }
-    const userIndex = users.findIndex((user) => user.id === +userId)
+    const userIndex = findUserIndex(req)
     if (userIndex === -1) {
       return res(ctx.status(400))
     }
@@ -108,3 +95,13 @@ export const handlers = [
     )
   }),
 ]
+
+function findUserIndex(
+  req: RestRequest<DefaultBodyType, PathParams<string>>
+): number {
+  const { userId } = req.params
+  if (typeof userId !== 'string' || isNaN(userId as unknown as number)) {
+    return -1
+  }
+  return users.findIndex((user) => user.id === +userId)
+}

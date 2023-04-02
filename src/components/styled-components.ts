@@ -1,4 +1,13 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
 
 export const Loading = styled.div`
   display: block;
@@ -16,22 +25,14 @@ export const Loading = styled.div`
     border-radius: 50%;
     border: 6px solid gray;
     border-color: gray transparent gray transparent;
-    animation: lds-dual-ring 1.2s linear infinite;
-  }
-  @keyframes lds-dual-ring {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+    animation: ${rotate} 1.2s linear infinite;
   }
 `
 
 export const PrimaryButton = styled.button`
   background-color: #1a73e8;
   border-radius: 5px;
-  border: 2px solid #1a73e8;
+  border: 1px solid #1a73e8;
   color: white;
   padding: 0.2rem 1.2rem;
   font-size: 0.8rem;
@@ -45,13 +46,9 @@ export const PrimaryButton = styled.button`
   }
 `
 
-export const WarningButton = styled.button`
+export const WarningButton = styled(PrimaryButton)`
   background-color: #e88e1a;
-  border-radius: 5px;
-  border: 2px solid #e88e1a;
-  color: white;
-  padding: 0.2rem 1.2rem;
-  font-size: 0.8rem;
+  border-color: #e88e1a;
   :hover {
     background-color: #df8816;
     border-color: #df8816;
@@ -62,13 +59,9 @@ export const WarningButton = styled.button`
   }
 `
 
-export const DangerButton = styled.button`
+export const DangerButton = styled(PrimaryButton)`
   background-color: #e8241a;
-  border-radius: 5px;
-  border: 2px solid #e8241a;
-  color: white;
-  padding: 0.2rem 1.2rem;
-  font-size: 0.8rem;
+  border-color: #e8241a;
   :hover {
     background-color: #df2016;
     border-color: #df2016;
@@ -79,30 +72,23 @@ export const DangerButton = styled.button`
   }
 `
 
-export const LightButton = styled.button`
+export const LightButton = styled(PrimaryButton)`
   background-color: transparent;
-  border-radius: 5px;
-  border: 1px solid #f0756e;
+  border-color: #f0756e;
   color: #f0756e;
-  padding: 0.2rem 1.2rem;
-  font-size: 0.8rem;
   :hover {
     background-color: #fdeded;
-    color: #ef726b;
+    border-color: #f0756e;
   }
   :active {
     background-color: #fbdada;
-    color: #ed615a;
+    border-color: #f0756e;
   }
 `
 
-export const SubmitButton = styled.button`
+export const SubmitButton = styled(PrimaryButton)`
   background-color: #11b524;
-  border-radius: 5px;
-  border: 1px solid #11b524;
-  color: white;
-  padding: 0.2rem 1.2rem;
-  font-size: 0.8rem;
+  border-color: #11b524;
   :hover {
     background-color: #10a821;
     border-color: #10a821;
