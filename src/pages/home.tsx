@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { User } from '@/model'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useEffect, useRef, forwardRef } from 'react'
-import { setIsLoading, setUserPendingDelete, setUsers } from '@/redux/root-reducer'
+import { setIsLoading, setUserPendingDelete, setUsers, sortUsersByUsername } from '@/redux/root-reducer'
 import { ActionsContainer, DangerButton, LightButton, Loading, PrimaryButton, SubmitButton, WarningButton } from '@/components/styled-components'
 import { showErrorMessage, showSuccessMessage } from '@/components/banners'
 
@@ -108,7 +108,7 @@ export default function Home() {
                 <Tr>
                   <Th align="center" key='1'>Id</Th>
                   <Th key='2'>Name</Th>
-                  <Th key='3'>Username</Th>
+                  <Th key='3' onClick={() => dispatch(sortUsersByUsername())}>Username</Th>
                   <Th key='4'>Email</Th>
                   <Th key='5'>City</Th>
                   <Th key='6'>Edit</Th>
