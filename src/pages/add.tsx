@@ -7,6 +7,7 @@ import { setIsLoading } from '@/redux/root-reducer'
 import { Form } from '@/components/form'
 import { Loading } from '@/components/styled-components'
 import { User } from '@/model'
+import { showErrorMessage, showSuccessMessage } from '@/components/banners'
 
 const Main = styled.main`
   width: 40vh;
@@ -32,11 +33,18 @@ export default function AddUserForm() {
     const { installMocks } = await import('@/mocks/browser')
     installMocks()
 
-    await fetch(
+    const response = await fetch(
       '/users',
       {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}},
     )
-    router.push('/home')
+
+    if (response.ok) {
+      showSuccessMessage('User has been added')
+      router.push('/home')
+    } else {
+      showErrorMessage('Error while adding user. Try again!')
+      dispatch(setIsLoading(false))
+    }
   };
 
   const isLoading = useAppSelector(state => state.isLoading)

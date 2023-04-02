@@ -8,6 +8,7 @@ import { setIsLoading } from '@/redux/root-reducer'
 import { Loading } from '@/components/styled-components'
 import { Form } from '@/components/form'
 import { User } from '@/model'
+import { showErrorMessage, showSuccessMessage } from '@/components/banners'
 
 const Main = styled.main`
   width: 40vh;
@@ -29,11 +30,18 @@ export default function EditUserForm() {
   const form = useForm<User>();
   const onSubmit: SubmitHandler<User> = async(data) => {
     dispatch(setIsLoading(true))
-    await fetch(
+    const response = await fetch(
       '/users/' + router.query.id,
       {method: 'PUT', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}},
     )
-    router.push('/home')
+
+    if (response.ok) {
+      showSuccessMessage('User has been saved')
+      router.push('/home')
+    } else {
+      showErrorMessage('Error while saving user. Try again!')
+      dispatch(setIsLoading(false))
+    }
   };
 
   const isLoading = useAppSelector(state => state.isLoading)
@@ -50,11 +58,17 @@ export default function EditUserForm() {
       installMocks()
 
       const response = await fetch('/users/' + router.query.id)
-      const user = await response.json()
 
-      form.reset(user)
+      if (response.ok) {
+        const user = await response.json()
+
+        form.reset(user)
+      } else {
+        showErrorMessage('Error while getting user\'s data. Try again!')
+      }
       dispatch(setIsLoading(false))
       })()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.id]);
 
   return (

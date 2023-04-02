@@ -6,6 +6,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useEffect, useRef, forwardRef } from 'react'
 import { setIsLoading, setUserPendingDelete, setUsers } from '@/redux/root-reducer'
 import { ActionsContainer, DangerButton, LightButton, Loading, PrimaryButton, SubmitButton, WarningButton } from '@/components/styled-components'
+import { showErrorMessage, showSuccessMessage } from '@/components/banners'
 
 const Main = styled.main`
   margin: 1rem 1rem;
@@ -73,13 +74,18 @@ export default function Home() {
 
       await loadUsers();
     })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadUsers() {
     const usersResponse = await fetch('/users')
-    const usersData = await usersResponse.json()
 
-    dispatch(setUsers(usersData))
+    if (usersResponse.ok) {
+      const usersData = await usersResponse.json()
+      dispatch(setUsers(usersData))
+    } else {
+      showErrorMessage('Error while getting users data. Try again!')
+    }
     dispatch(setIsLoading(false))
   }
 
@@ -133,7 +139,7 @@ export default function Home() {
 }
 
 const Dialog = styled.dialog`
-  width: 30vw;
+  width: 90vw;
   border-radius: 5px;
   border: 0;
   padding: 0;
@@ -155,23 +161,34 @@ const Dialog = styled.dialog`
   > .actions {
     padding: 0 1rem 1rem 0;
   }
+
+  @media (min-width: 610px) {
+    width: 30vw;
+  }
 `
 
 type DeleteDialogProps = {
   onSuccess: () => void
 }
 
-const DeleteDialog = forwardRef<HTMLDialogElement, DeleteDialogProps>((props, ref) => {
+const DeleteDialog = forwardRef<HTMLDialogElement, DeleteDialogProps>(function DialogComponent(props, ref) {
   const userPendingDelete = useAppSelector(state => state.userPendingDelete)
   const isLoading = useAppSelector(state => state.isLoading)
   const dispatch = useAppDispatch()
 
   const deleteUser = async() => {
     dispatch(setIsLoading(true))
-    await fetch('/users/' + userPendingDelete.id, {method: 'DELETE'})
-    closeSelf()
-    dispatch(setUserPendingDelete({} as User))
-    props.onSuccess()
+    const response = await fetch('/users/' + userPendingDelete.id, {method: 'DELETE'})
+
+    if (response.ok) {
+      showSuccessMessage('User has been deleted')
+      closeSelf()
+      dispatch(setUserPendingDelete({} as User))
+      props.onSuccess()
+    } else {
+      showErrorMessage('Error while deleting a user. Try again!')
+      dispatch(setIsLoading(false))
+    }
   }
 
   const closeSelf = () => {

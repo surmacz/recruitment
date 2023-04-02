@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { SubmitHandler, UseFormReturn, useForm } from "react-hook-form";
+import { SubmitHandler, UseFormReturn } from "react-hook-form";
 import styled from "styled-components";
 import { ActionsContainer, LightButton, SubmitButton } from "./styled-components";
 import { FC } from "react";
@@ -69,7 +69,7 @@ export const Form: FC<FormProps> = ({form, onSubmit}) => {
       <div><input id="city" {...form.register('city')} required /></div>
     </FormRow>
     <ActionsContainer>
-      <LightButton onClick={() => router.push('/home')}>Cancel</LightButton>
+      <LightButton type="button" onClick={() => router.push('/home')}>Cancel</LightButton>
       <SubmitButton type="submit" value="Submit" />
     </ActionsContainer>
   </form>
